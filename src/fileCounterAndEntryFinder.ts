@@ -50,24 +50,28 @@ export async function countFilesAndFindEntry(
   return { fileCount: allFiles.length, mainEntry };
 }
 
-export async function detectPrimaryLanguage(repoRoot: string = process.cwd()): Promise<{ language: 'tsx' | 'ts' | 'js' | 'java' | 'kotlin' | 'go' | 'py' | 'other' }> {
+export async function detectPrimaryLanguage(
+  repoRoot: string = process.cwd()
+): Promise<{
+  language: "tsx" | "ts" | "js" | "java" | "kotlin" | "go" | "py" | "other";
+}> {
   // 1. 依据特殊文件优先判断
   const specialFiles = [
-    { file: 'package.json', lang: 'js' },
-    { file: 'pom.xml', lang: 'java' },
-    { file: 'build.gradle', lang: 'kotlin' },
-    { file: 'go.mod', lang: 'go' },
+    { file: "package.json", lang: "js" },
+    { file: "pom.xml", lang: "java" },
+    { file: "build.gradle", lang: "kotlin" },
+    { file: "go.mod", lang: "go" },
   ];
   for (const { file, lang } of specialFiles) {
     try {
       await fs.access(path.join(repoRoot, file));
-      if (file === 'package.json') {
+      if (file === "package.json") {
         // 进一步判断 tsconfig.json 存在性
         try {
-          await fs.access(path.join(repoRoot, 'tsconfig.json'));
-          return { language: 'ts' };
+          await fs.access(path.join(repoRoot, "tsconfig.json"));
+          return { language: "ts" };
         } catch {
-          return { language: 'js' };
+          return { language: "js" };
         }
       }
       return { language: lang as any };
@@ -90,29 +94,40 @@ export async function detectPrimaryLanguage(repoRoot: string = process.cwd()): P
     await walk(path.join(repoRoot, folder));
   }
   const extMap: Record<string, string> = {
-    '.tsx': 'tsx', '.ts': 'ts', '.js': 'js', '.java': 'java', '.kt': 'kotlin', '.go': 'go', '.py': 'py'
+    ".tsx": "tsx",
+    ".ts": "ts",
+    ".js": "js",
+    ".java": "java",
+    ".kt": "kotlin",
+    ".go": "go",
+    ".py": "py",
   };
   for (const [ext, count] of Object.entries(exts)) {
     if (extMap[ext] && count / total > 0.6) {
       return { language: extMap[ext] as any };
     }
   }
-  return { language: 'other' };
+  return { language: "other" };
 }
 
-export async function detectFramework(repoRoot: string = process.cwd()): Promise<{ framework: string | null }> {
+export async function detectFramework(
+  repoRoot: string = process.cwd()
+): Promise<{ framework: string | null }> {
   // 1. package.json
   try {
-    const pkgRaw = await fs.readFile(path.join(repoRoot, 'package.json'), 'utf8');
+    const pkgRaw = await fs.readFile(
+      path.join(repoRoot, "package.json"),
+      "utf8"
+    );
     const pkg = JSON.parse(pkgRaw);
     const deps = { ...pkg.dependencies, ...pkg.devDependencies };
     const frameworks: string[] = [];
-    if (deps.react && deps['react-dom']) frameworks.push('React');
-    if (deps.next) frameworks.push('Next.js');
-    if (deps.zustand) frameworks.push('Zustand');
-    if (deps.tailwindcss) frameworks.push('Tailwind');
-    if (deps.express || deps.nest) frameworks.push('Node API');
-    if (frameworks.length) return { framework: frameworks.join(' + ') };
+    if (deps.react && deps["react-dom"]) frameworks.push("React");
+    if (deps.next) frameworks.push("Next.js");
+    if (deps.zustand) frameworks.push("Zustand");
+    if (deps.tailwindcss) frameworks.push("Tailwind");
+    if (deps.express || deps.nest) frameworks.push("Node API");
+    if (frameworks.length) return { framework: frameworks.join(" + ") };
   } catch {}
   // 2. pom.xml/gradle（略，因无文件）
   // 3. fallback
