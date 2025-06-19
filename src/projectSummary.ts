@@ -1,10 +1,8 @@
 import * as path from "path";
 import { scanCoreDirs } from "./scanCoreDirs";
-import {
-  countFilesAndFindEntry,
-  detectPrimaryLanguage,
-  detectFramework,
-} from "./fileCounterAndEntryFinder";
+import { detectPrimaryLanguage } from "./detectLanguage";
+import { detectFramework } from "./inferFramework";
+import { countFilesAndFindEntry } from "./fileCounterAndEntryFinder";
 
 export async function generateProjectSummary(
   rootDir: string = process.cwd()
