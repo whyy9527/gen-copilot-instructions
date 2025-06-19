@@ -29,6 +29,15 @@ export async function generateProjectSummary(
   };
 }
 
+export type Summary = {
+  repoName: string;
+  language: string;
+  folders: string[];
+  fileCount: number;
+  framework: string | null;
+  mainEntry: string | null;
+};
+
 if (require.main === module) {
   generateProjectSummary().then((summary) => {
     console.log(JSON.stringify(summary, null, 2));
