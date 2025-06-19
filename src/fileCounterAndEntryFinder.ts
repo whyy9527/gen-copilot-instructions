@@ -49,6 +49,3 @@ export async function countFilesAndFindEntry(
   }
   return { fileCount: allFiles.length, mainEntry };
 }
-
-// detectPrimaryLanguage 已迁移至 detectLanguage.ts
-// detectFramework 已迁移至 inferFramework.ts
