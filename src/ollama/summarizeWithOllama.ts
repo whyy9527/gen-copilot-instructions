@@ -16,12 +16,16 @@ export async function summarizeWithOllama(summary: Summary): Promise<string> {
   }
   const prompt = `You are GitHub Copilot Instructions Generator.\nHere is a project summary (JSON): ${JSON.stringify(
     summary
-  )}\nWrite concise English instructions (≤150 words) covering:\n• purpose & tech stack\n• coding style conventions\n• entry file / key folders\nFormat: first line single-sentence overview, then 3-5 bullet points.`;
+  )}\nWrite concise English instructions (≤150 words) covering:\n• purpose & tech stack\n• coding style conventions\n• entry file / key folders\nFormat: first line single-sentence overview, then 3-5 bullet points.\nOutput only the final instructions.`;
   try {
     const { message } = await chatWithOllama("deepseek-r1:14b", [
       { role: "user", content: prompt },
     ]);
-    return message.content.trim();
+    // 清洗 LLM 输出，去除 <think> 等标签和多余空行
+    return message.content
+      .replace(/<[^>]+>/g, "")
+      .replace(/^hello!?$/im, "")
+      .trim();
   } catch (e) {
     throw new Error(
       "❌ Failed to get summary from Ollama: " +
