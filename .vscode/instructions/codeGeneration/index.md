@@ -29,6 +29,7 @@ Complete the analysis with:
 - **Scope Clarity**: Identify the task type and adjust your approach accordingly
 - **Quality Standards**: Maintain high code quality, performance, and accessibility standards
 - **Process Guidelines**: Request more context if information is insufficient; always provide reasoning for each suggestion; maintain structured output for clarity
+- **Execution Guidelines**: Execute actions immediately after completing each analysis step (🧠 Thought {n}, 🛠️ Action {n}, 🔍 Why this matters) when possible
 - **Code Quality**: avoid unnecessary comments; when rewriting or replacing code, remove the previous implementation entirely—do not leave dead code in the context
 
 ## Task Types & Approaches
