@@ -20,24 +20,28 @@ export async function detectPrimaryLanguage(
   // 1. 统计源码文件扩展名（优先）
   const { folders } = await scanCoreDirs(repoRoot);
   const exts: Record<string, number> = {};
-  let total = 0;
   async function walk(dir: string) {
     const entries = await fs.readdir(dir, { withFileTypes: true });
     for (const entry of entries) {
       if (entry.isDirectory()) continue;
       const ext = path.extname(entry.name).toLowerCase();
       exts[ext] = (exts[ext] || 0) + 1;
-      total++;
     }
   }
   for (const folder of folders) {
     await walk(path.join(repoRoot, folder));
   }
-  for (const [ext, count] of Object.entries(exts)) {
-    if (extMap[ext] && count / total > 0.6) {
-      return { language: extMap[ext] as any };
-    }
+  // 统计 .tsx/.ts/.js 文件数
+  const tsxCount = exts[".tsx"] ?? 0;
+  const tsCount = exts[".ts"] ?? 0;
+  const jsCount = exts[".js"] ?? 0;
+  const total = Object.values(exts).reduce((a, b) => a + b, 0);
+  if ((tsxCount + tsCount) / total > 0.6) {
+    if (tsxCount / (tsxCount + tsCount) > 0.2) return { language: "tsx" };
+    return { language: "ts" };
   }
+  if (jsCount / total > 0.6) return { language: "js" };
+
   // 2. 依据特殊文件判断
   const specialFiles = [
     { file: "package.json", lang: "js" },
