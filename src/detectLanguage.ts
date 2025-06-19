@@ -17,28 +17,7 @@ export async function detectPrimaryLanguage(
 ): Promise<{
   language: "tsx" | "ts" | "js" | "java" | "kotlin" | "go" | "py" | "other";
 }> {
-  // 1. 依据特殊文件优先判断
-  const specialFiles = [
-    { file: "package.json", lang: "js" },
-    { file: "pom.xml", lang: "java" },
-    { file: "build.gradle", lang: "kotlin" },
-    { file: "go.mod", lang: "go" },
-  ];
-  for (const { file, lang } of specialFiles) {
-    try {
-      await fs.access(path.join(repoRoot, file));
-      if (file === "package.json") {
-        try {
-          await fs.access(path.join(repoRoot, "tsconfig.json"));
-          return { language: "ts" };
-        } catch {
-          return { language: "js" };
-        }
-      }
-      return { language: lang as any };
-    } catch {}
-  }
-  // 2. 统计源码文件扩展名
+  // 1. 统计源码文件扩展名（优先）
   const { folders } = await scanCoreDirs(repoRoot);
   const exts: Record<string, number> = {};
   let total = 0;
@@ -58,6 +37,27 @@ export async function detectPrimaryLanguage(
     if (extMap[ext] && count / total > 0.6) {
       return { language: extMap[ext] as any };
     }
+  }
+  // 2. 依据特殊文件判断
+  const specialFiles = [
+    { file: "package.json", lang: "js" },
+    { file: "pom.xml", lang: "java" },
+    { file: "build.gradle", lang: "kotlin" },
+    { file: "go.mod", lang: "go" },
+  ];
+  for (const { file, lang } of specialFiles) {
+    try {
+      await fs.access(path.join(repoRoot, file));
+      if (file === "package.json") {
+        try {
+          await fs.access(path.join(repoRoot, "tsconfig.json"));
+          return { language: "ts" };
+        } catch {
+          return { language: "js" };
+        }
+      }
+      return { language: lang as any };
+    } catch {}
   }
   return { language: "other" };
 }
