@@ -21,8 +21,9 @@ export async function summarizeWithOllama(summary: Summary): Promise<string> {
     const { message } = await chatWithOllama("deepseek-r1:14b", [
       { role: "user", content: prompt },
     ]);
-    // 清洗 LLM 输出，去除 <think> 等标签和多余空行
+    // 清洗 LLM 输出，去除 <think> 标签及其内容和多余空行
     return message.content
+      .replace(/<think>[\s\S]*?<\/think>/gi, "")
       .replace(/<[^>]+>/g, "")
       .replace(/^hello!?$/im, "")
       .trim();
