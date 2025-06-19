@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { summarizeWithOllama } from "./ollama/summarizeWithOllama";
-import { generateProjectSummary } from "./projectSummary";
+import { generateProjectSummary } from "./analyze/projectSummary";
 
 function parseArgs() {
   const args = process.argv.slice(2);

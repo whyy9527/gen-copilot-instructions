@@ -2,7 +2,7 @@ import { strict as assert } from "assert";
 import fs from "fs";
 import path from "path";
 import os from "os";
-import { generateProjectSummary } from "../src/projectSummary";
+import { generateProjectSummary } from "../src/analyze/projectSummary";
 
 (async () => {
   // ── 1. 假 React+TS 项目 ──

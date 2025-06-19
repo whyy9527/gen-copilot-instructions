@@ -1,7 +1,7 @@
 import { chatWithOllama } from "./chatWithOllama";
-import { Summary } from "../projectSummary";
-import { isOllamaRunning } from "./checkAndStartModel";
-import { generateProjectSummary } from "../projectSummary";
+import { Summary } from "../analyze/projectSummary";
+import { isOllamaRunning } from "../checkAndStartModel";
+import { generateProjectSummary } from "../analyze/projectSummary";
 
 /**
  * Use deepseek-r1:14b to summarize a project summary as English instructions.

@@ -1,4 +1,4 @@
-import { chatWithOllama, ChatMessage } from "./chatWithOllama";
+import { chatWithOllama, ChatMessage } from "./ollama/chatWithOllama";
 
 export async function isOllamaRunning(): Promise<boolean> {
   try {

@@ -2,7 +2,7 @@ import { strict as assert } from "assert";
 import fs from "fs";
 import path from "path";
 import os from "os";
-import { scanCoreDirs } from "../src/scanCoreDirs";
+import { scanCoreDirs } from "../src/analyze/scanCoreDirs";
 
 (async () => {
   // ── 1. 在系统临时目录构造一个假项目 ──
