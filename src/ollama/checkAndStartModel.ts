@@ -45,7 +45,7 @@ export async function sayHelloToModel(modelName: string): Promise<void> {
   }
 }
 
-async function main() {
+export async function checkAndStartModel() {
   const model = "deepseek-r1:14b";
 
   if (!(await isOllamaRunning())) {
@@ -60,5 +60,3 @@ async function main() {
   await runModelInBackground(model);
   await sayHelloToModel(model);
 }
-
-main();
