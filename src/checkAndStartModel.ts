@@ -60,3 +60,5 @@ export async function checkAndStartModel() {
   await runModelInBackground(model);
   await sayHelloToModel(model);
 }
+
+checkAndStartModel();
