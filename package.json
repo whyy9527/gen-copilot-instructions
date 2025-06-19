@@ -3,6 +3,6 @@
     "@types/node": "^24.0.3"
   },
   "scripts": {
-    "copilot:instructions": "tsx src/writeInstructions.ts --to both"
+    "copilot:instructions": "npx tsx src/writeInstructions.ts --to both"
   }
 }
