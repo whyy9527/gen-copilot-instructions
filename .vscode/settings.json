@@ -37,5 +37,6 @@
   "github.copilot.chat.agent.runTasks": true,
   "github.copilot.chat.setupTests.enabled": true,
   "github.copilot.chat.summarizeAgentConversationHistory.enabled": true,
-  "github.copilot.chat.byok.ollamaEndpoint": "http://localhost:11434"
+  "github.copilot.chat.byok.ollamaEndpoint": "http://localhost:11434",
+  "cSpell.words": ["deepseek", "Ollama"]
 }

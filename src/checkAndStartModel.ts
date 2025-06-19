@@ -1,4 +1,5 @@
-// 检查 Ollama 是否运行
+import { chatWithOllama, ChatMessage } from "./chatWithOllama";
+
 export async function isOllamaRunning(): Promise<boolean> {
   try {
     const res = await fetch("http://localhost:11434");
@@ -8,14 +9,12 @@ export async function isOllamaRunning(): Promise<boolean> {
   }
 }
 
-// 检查模型是否存在
 export async function hasModel(modelName: string): Promise<boolean> {
   const { execSync } = await import("child_process");
   const output = execSync("ollama list").toString();
   return output.includes(modelName);
 }
 
-// 拉取模型
 export async function pullModel(modelName: string): Promise<void> {
   const { spawn } = await import("child_process");
   console.log(`🔄 Pulling ${modelName}...`);
@@ -23,7 +22,6 @@ export async function pullModel(modelName: string): Promise<void> {
   await new Promise((res) => proc.on("exit", res));
 }
 
-// 后台运行 Ollama 模型（不阻塞主进程）
 export async function runModelInBackground(modelName: string): Promise<void> {
   const { spawn } = await import("child_process");
   const proc = spawn("ollama", ["run", modelName], {
@@ -31,10 +29,22 @@ export async function runModelInBackground(modelName: string): Promise<void> {
     stdio: "ignore",
   });
   proc.unref();
-  console.log(`🚀 Ollama model '${modelName}' started in background.`);
+  console.log(`🚀 Started model "${modelName}" in background.`);
 }
 
-// 主流程
+export async function sayHelloToModel(modelName: string): Promise<void> {
+  await new Promise((res) => setTimeout(res, 5000));
+  const messages: ChatMessage[] = [{ role: "user", content: "hello" }];
+  try {
+    const { message, duration } = await chatWithOllama(modelName, messages);
+    console.log(`🤖 Model says: ${message.content}`);
+    console.log(`⏱️ Duration: ${duration} ms`);
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
+}
+
 async function main() {
   const model = "deepseek-r1:14b";
 
@@ -48,6 +58,7 @@ async function main() {
   }
 
   await runModelInBackground(model);
+  await sayHelloToModel(model);
 }
 
 main();
