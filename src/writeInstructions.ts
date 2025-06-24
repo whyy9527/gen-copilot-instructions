@@ -5,29 +5,25 @@ import { generateProjectSummary } from "./analyze/projectSummary";
 
 function parseArgs() {
   const args = process.argv.slice(2);
-  const to = args.includes("--to") ? args[args.indexOf("--to") + 1] : "console";
-  return { to };
+  const path = args.includes("--path")
+    ? args[args.indexOf("--path") + 1]
+    : process.cwd();
+  return { path };
 }
 
 async function writeInstructions() {
-  const { to } = parseArgs();
-  const summary = await generateProjectSummary();
+  const { path: projectPath } = parseArgs();
+  const summary = await generateProjectSummary(projectPath);
   const instructions = await summarizeWithOllama(summary);
 
-  if (to === "md" || to === "both") {
-    const mdPath = path.join(
-      process.cwd(),
-      ".github",
-      "copilot-instructions.md"
-    );
-    fs.mkdirSync(path.dirname(mdPath), { recursive: true });
-    fs.writeFileSync(mdPath, instructions + "\n");
-    console.log(`✅ Copilot instructions written to ${mdPath}`);
-  }
-  if (to === "console" || to === "both") {
-    console.log("\n--- Copilot Instructions ---\n");
-    console.log(instructions);
-  }
+  // Write to file in the specified project directory
+  const outputPath = path.join(projectPath, "copilot-instructions.md");
+  fs.writeFileSync(outputPath, instructions + "\n");
+  console.log(`✅ Copilot instructions written to ${outputPath}`);
+
+  // Also output to console
+  console.log("\n--- Copilot Instructions ---\n");
+  console.log(instructions);
 }
 
 if (require.main === module) {
